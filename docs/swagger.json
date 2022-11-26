@@ -1,0 +1,15 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a Social Nyetwork server.",
+        "title": "Social Nyetwork Swagger",
+        "contact": {},
+        "license": {
+            "name": "WTFPL 2.0",
+            "url": "http://www.wtfpl.net/txt/copying/"
+        },
+        "version": "1.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {}
+}
