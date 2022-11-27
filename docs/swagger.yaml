@@ -1,4 +1,264 @@
 basePath: /api/v1
+definitions:
+  models.CreateUserRequest:
+    properties:
+      about:
+        description: Short user self-description
+        example: Some useful and interesting info
+        maxLength: 1000
+        type: string
+      birthday:
+        description: User birthday
+        example: "2022-01-01"
+        type: string
+      country:
+        description: User country region code
+        example: RU-PER
+        type: string
+      currency:
+        description: User preferred currency code
+        example: RUB
+        type: string
+      email:
+        description: User main e-mail
+        example: example@example.com
+        maxLength: 320
+        type: string
+      gender:
+        allOf:
+        - $ref: '#/definitions/models.Gender'
+        description: User gender
+        example: MALE
+      language:
+        description: User preferred language code
+        example: ru_RU
+        type: string
+      login:
+        description: User login
+        example: user
+        maxLength: 255
+        minLength: 3
+        type: string
+      name:
+        description: User full name
+        example: User Usersson
+        type: string
+      password:
+        description: User password
+        example: password
+        minLength: 5
+        type: string
+      phone:
+        description: User main phone number
+        example: "+78005553535"
+        type: string
+      timezone:
+        description: User timezone
+        example: UTC
+        type: string
+    required:
+    - birthday
+    - country
+    - currency
+    - gender
+    - language
+    - login
+    - name
+    - password
+    - timezone
+    type: object
+  models.EditUserRequest:
+    properties:
+      about:
+        description: Short user self-description
+        example: Some useful and interesting info
+        maxLength: 1000
+        type: string
+      birthday:
+        description: User birthday
+        example: "2022-01-01"
+        type: string
+      country:
+        description: User country region code
+        example: RU-PER
+        type: string
+      currency:
+        description: User preferred currency code
+        example: RUB
+        type: string
+      email:
+        description: User main e-mail
+        example: example@example.com
+        maxLength: 320
+        type: string
+      gender:
+        allOf:
+        - $ref: '#/definitions/models.Gender'
+        description: User gender
+        example: MALE
+      language:
+        description: User preferred language code
+        example: ru_RU
+        type: string
+      login:
+        description: User login
+        example: user
+        maxLength: 255
+        minLength: 3
+        type: string
+      name:
+        description: User full name
+        example: User Usersson
+        type: string
+      phone:
+        description: User main phone number
+        example: "+78005553535"
+        type: string
+      timezone:
+        description: User timezone
+        example: UTC
+        type: string
+    required:
+    - birthday
+    - country
+    - currency
+    - gender
+    - language
+    - login
+    - name
+    - timezone
+    type: object
+  models.Gender:
+    enum:
+    - ""
+    - MALE
+    - FEMALE
+    type: string
+    x-enum-varnames:
+    - Undefined
+    - Male
+    - Female
+  models.GetUsersResponse:
+    properties:
+      items:
+        description: Found items
+        items:
+          $ref: '#/definitions/models.UserItem'
+        type: array
+      pageNumber:
+        description: Number of returned page
+        type: integer
+      pageSize:
+        description: Max page size
+        type: integer
+      totalItems:
+        description: Total count of found items
+        type: integer
+    type: object
+  models.PasswordData:
+    description: Password definition
+    properties:
+      password:
+        description: User password
+        example: password
+        minLength: 5
+        type: string
+    required:
+    - password
+    type: object
+  models.UserData:
+    description: User full info
+    properties:
+      about:
+        description: Short user self-description
+        example: Some useful and interesting info
+        maxLength: 1000
+        type: string
+      birthday:
+        description: User birthday
+        example: "2022-01-01"
+        type: string
+      country:
+        description: User country region code
+        example: RU-PER
+        type: string
+      currency:
+        description: User preferred currency code
+        example: RUB
+        type: string
+      email:
+        description: User main e-mail
+        example: example@example.com
+        maxLength: 320
+        type: string
+      gender:
+        allOf:
+        - $ref: '#/definitions/models.Gender'
+        description: User gender
+        example: MALE
+      language:
+        description: User preferred language code
+        example: ru_RU
+        type: string
+      login:
+        description: User login
+        example: user
+        maxLength: 255
+        minLength: 3
+        type: string
+      name:
+        description: User full name
+        example: User Usersson
+        type: string
+      phone:
+        description: User main phone number
+        example: "+78005553535"
+        type: string
+      timezone:
+        description: User timezone
+        example: UTC
+        type: string
+    required:
+    - birthday
+    - country
+    - currency
+    - gender
+    - language
+    - login
+    - name
+    - timezone
+    type: object
+  models.UserItem:
+    description: User short info item
+    properties:
+      birthday:
+        description: User birthday
+        example: "2022-01-01"
+        type: string
+      gender:
+        allOf:
+        - $ref: '#/definitions/models.Gender'
+        description: User gender
+        example: MALE
+      id:
+        description: User ID
+        type: integer
+      login:
+        description: User login
+        example: user
+        maxLength: 255
+        minLength: 3
+        type: string
+      name:
+        description: User full name
+        example: User Usersson
+        type: string
+    required:
+    - birthday
+    - gender
+    - login
+    - name
+    type: object
 info:
   contact: {}
   description: This is a Social Nyetwork server.
@@ -7,5 +267,211 @@ info:
     url: http://www.wtfpl.net/txt/copying/
   title: Social Nyetwork Swagger
   version: "1.0"
-paths: {}
+paths:
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Search users by some filters
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUsersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create new user with set password
+      parameters:
+      - description: New user data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.UserData'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create user
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/models.UserData'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get user info by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserData'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get full user info
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update user information
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated user data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.EditUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserData'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Edit user info
+      tags:
+      - users
+  /users/{id}/password:
+    put:
+      consumes:
+      - application/json
+      description: Change user password
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New password data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.PasswordData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserData'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Change user password
+      tags:
+      - users
 swagger: "2.0"
+tags:
+- description: User service
+  name: users

@@ -11,5 +11,657 @@
         "version": "1.0"
     },
     "basePath": "/api/v1",
-    "paths": {}
+    "paths": {
+        "/users": {
+            "get": {
+                "description": "Search users by some filters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Search users",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetUsersResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create new user with set password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create user",
+                "parameters": [
+                    {
+                        "description": "New user data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "description": "Get user info by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get full user info",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update user information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Edit user info",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated user data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.EditUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete user by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Delete user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/password": {
+            "put": {
+                "description": "Change user password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Change user password",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "New password data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.PasswordData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.UserData"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.CreateUserRequest": {
+            "type": "object",
+            "required": [
+                "birthday",
+                "country",
+                "currency",
+                "gender",
+                "language",
+                "login",
+                "name",
+                "password",
+                "timezone"
+            ],
+            "properties": {
+                "about": {
+                    "description": "Short user self-description",
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "Some useful and interesting info"
+                },
+                "birthday": {
+                    "description": "User birthday",
+                    "type": "string",
+                    "example": "2022-01-01"
+                },
+                "country": {
+                    "description": "User country region code",
+                    "type": "string",
+                    "example": "RU-PER"
+                },
+                "currency": {
+                    "description": "User preferred currency code",
+                    "type": "string",
+                    "example": "RUB"
+                },
+                "email": {
+                    "description": "User main e-mail",
+                    "type": "string",
+                    "maxLength": 320,
+                    "example": "example@example.com"
+                },
+                "gender": {
+                    "description": "User gender",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Gender"
+                        }
+                    ],
+                    "example": "MALE"
+                },
+                "language": {
+                    "description": "User preferred language code",
+                    "type": "string",
+                    "example": "ru_RU"
+                },
+                "login": {
+                    "description": "User login",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 3,
+                    "example": "user"
+                },
+                "name": {
+                    "description": "User full name",
+                    "type": "string",
+                    "example": "User Usersson"
+                },
+                "password": {
+                    "description": "User password",
+                    "type": "string",
+                    "minLength": 5,
+                    "example": "password"
+                },
+                "phone": {
+                    "description": "User main phone number",
+                    "type": "string",
+                    "example": "+78005553535"
+                },
+                "timezone": {
+                    "description": "User timezone",
+                    "type": "string",
+                    "example": "UTC"
+                }
+            }
+        },
+        "models.EditUserRequest": {
+            "type": "object",
+            "required": [
+                "birthday",
+                "country",
+                "currency",
+                "gender",
+                "language",
+                "login",
+                "name",
+                "timezone"
+            ],
+            "properties": {
+                "about": {
+                    "description": "Short user self-description",
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "Some useful and interesting info"
+                },
+                "birthday": {
+                    "description": "User birthday",
+                    "type": "string",
+                    "example": "2022-01-01"
+                },
+                "country": {
+                    "description": "User country region code",
+                    "type": "string",
+                    "example": "RU-PER"
+                },
+                "currency": {
+                    "description": "User preferred currency code",
+                    "type": "string",
+                    "example": "RUB"
+                },
+                "email": {
+                    "description": "User main e-mail",
+                    "type": "string",
+                    "maxLength": 320,
+                    "example": "example@example.com"
+                },
+                "gender": {
+                    "description": "User gender",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Gender"
+                        }
+                    ],
+                    "example": "MALE"
+                },
+                "language": {
+                    "description": "User preferred language code",
+                    "type": "string",
+                    "example": "ru_RU"
+                },
+                "login": {
+                    "description": "User login",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 3,
+                    "example": "user"
+                },
+                "name": {
+                    "description": "User full name",
+                    "type": "string",
+                    "example": "User Usersson"
+                },
+                "phone": {
+                    "description": "User main phone number",
+                    "type": "string",
+                    "example": "+78005553535"
+                },
+                "timezone": {
+                    "description": "User timezone",
+                    "type": "string",
+                    "example": "UTC"
+                }
+            }
+        },
+        "models.Gender": {
+            "type": "string",
+            "enum": [
+                "",
+                "MALE",
+                "FEMALE"
+            ],
+            "x-enum-varnames": [
+                "Undefined",
+                "Male",
+                "Female"
+            ]
+        },
+        "models.GetUsersResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "description": "Found items",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.UserItem"
+                    }
+                },
+                "pageNumber": {
+                    "description": "Number of returned page",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "Max page size",
+                    "type": "integer"
+                },
+                "totalItems": {
+                    "description": "Total count of found items",
+                    "type": "integer"
+                }
+            }
+        },
+        "models.PasswordData": {
+            "description": "Password definition",
+            "type": "object",
+            "required": [
+                "password"
+            ],
+            "properties": {
+                "password": {
+                    "description": "User password",
+                    "type": "string",
+                    "minLength": 5,
+                    "example": "password"
+                }
+            }
+        },
+        "models.UserData": {
+            "description": "User full info",
+            "type": "object",
+            "required": [
+                "birthday",
+                "country",
+                "currency",
+                "gender",
+                "language",
+                "login",
+                "name",
+                "timezone"
+            ],
+            "properties": {
+                "about": {
+                    "description": "Short user self-description",
+                    "type": "string",
+                    "maxLength": 1000,
+                    "example": "Some useful and interesting info"
+                },
+                "birthday": {
+                    "description": "User birthday",
+                    "type": "string",
+                    "example": "2022-01-01"
+                },
+                "country": {
+                    "description": "User country region code",
+                    "type": "string",
+                    "example": "RU-PER"
+                },
+                "currency": {
+                    "description": "User preferred currency code",
+                    "type": "string",
+                    "example": "RUB"
+                },
+                "email": {
+                    "description": "User main e-mail",
+                    "type": "string",
+                    "maxLength": 320,
+                    "example": "example@example.com"
+                },
+                "gender": {
+                    "description": "User gender",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Gender"
+                        }
+                    ],
+                    "example": "MALE"
+                },
+                "language": {
+                    "description": "User preferred language code",
+                    "type": "string",
+                    "example": "ru_RU"
+                },
+                "login": {
+                    "description": "User login",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 3,
+                    "example": "user"
+                },
+                "name": {
+                    "description": "User full name",
+                    "type": "string",
+                    "example": "User Usersson"
+                },
+                "phone": {
+                    "description": "User main phone number",
+                    "type": "string",
+                    "example": "+78005553535"
+                },
+                "timezone": {
+                    "description": "User timezone",
+                    "type": "string",
+                    "example": "UTC"
+                }
+            }
+        },
+        "models.UserItem": {
+            "description": "User short info item",
+            "type": "object",
+            "required": [
+                "birthday",
+                "gender",
+                "login",
+                "name"
+            ],
+            "properties": {
+                "birthday": {
+                    "description": "User birthday",
+                    "type": "string",
+                    "example": "2022-01-01"
+                },
+                "gender": {
+                    "description": "User gender",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.Gender"
+                        }
+                    ],
+                    "example": "MALE"
+                },
+                "id": {
+                    "description": "User ID",
+                    "type": "integer"
+                },
+                "login": {
+                    "description": "User login",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 3,
+                    "example": "user"
+                },
+                "name": {
+                    "description": "User full name",
+                    "type": "string",
+                    "example": "User Usersson"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "User service",
+            "name": "users"
+        }
+    ]
 }
