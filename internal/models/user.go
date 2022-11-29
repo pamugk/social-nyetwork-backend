@@ -43,7 +43,7 @@ const (
 // @Description Short user info
 type ShortUserData struct {
 	Login    string `example:"user" json:"login" validate:"required,min=3,max=255,alphanum"` // User login
-	FullName string `example:"User Usersson" json:"name" validate:"required"`                // User full name
+	FullName string `example:"User Usersson" json:"name" validate:"required,max=1500"`                // User full name
 
 	Birthday time.Time `example:"2022-01-01" json:"birthday" validate:"required"` // User birthday
 	Gender   Gender    `example:"MALE" json:"gender" validate:"required"`         // User gender
