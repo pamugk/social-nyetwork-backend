@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -11,6 +12,7 @@ import (
 	"github.com/swaggo/http-swagger"
 
 	"github.com/social-nyetwork/backend/internal/models"
+	"github.com/social-nyetwork/backend/internal/service"
 )
 
 // @title Social Nyetwork Swagger
@@ -25,6 +27,8 @@ import (
 
 // @BasePath /api/v1
 func main() {
+	defer service.CloseDbPool()
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.Heartbeat("/ping"))
@@ -40,7 +44,7 @@ func main() {
 			r.Get("/", getUsers)
 			r.Post("/", createUser)
 
-			r.Route("/{id}", func(r chi.Router) {
+			r.Route("/{id:^-?\\d+}", func(r chi.Router) {
 				r.Get("/", getUser)
 				r.Put("/", editUser)
 				r.Delete("/", removeUser)
@@ -65,16 +69,28 @@ func main() {
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
 // @Param        request   body      models.PasswordData  true  "New password data"
-// @Success      200  {object}  models.UserData
+// @Success      200  {object}  string
 // @Failure      400  {object}  string
 // @Failure      404  {object}  string
 // @Failure      500  {object}  string
 // @Router       /users/{id}/password [put]
 func changeUserPassword(w http.ResponseWriter, r *http.Request) {
-	data := &models.PasswordData{}
-	if err := render.Bind(r, data); err != nil {
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+
+	if err == nil {
+		data := &models.PasswordData{}
+		if err = render.Bind(r, data); err == nil {
+			err = service.ChangeUserPassword(id, data)
+		}
+	}
+
+	if err == nil {
+		render.Status(r, http.StatusOK)
+	} else if (err == service.NotFoundError) {
+		render.Status(r, http.StatusNotFound)
+	} else {
 		render.Status(r, http.StatusBadRequest)
-		return
+		render.PlainText(w, r, err.Error())
 	}
 }
 
@@ -91,9 +107,18 @@ func changeUserPassword(w http.ResponseWriter, r *http.Request) {
 // @Router       /users [post]
 func createUser(w http.ResponseWriter, r *http.Request) {
 	data := &models.CreateUserRequest{}
-	if err := render.Bind(r, data); err != nil {
+	err := render.Bind(r, data)
+	if err = nil {
+		err = service.CreateUser(data)
+	}
+
+	if err == nil {
+		render.Status(r, http.StatusCreated)
+	} else if (err == service.NotFoundError) {
+		render.Status(r, http.StatusNotFound)
+	} else {
 		render.Status(r, http.StatusBadRequest)
-		return
+		render.PlainText(w, r, err.Error())
 	}
 }
 
@@ -111,10 +136,22 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  string
 // @Router       /users/{id} [put]
 func editUser(w http.ResponseWriter, r *http.Request) {
-	data := &models.EditUserRequest{}
-	if err := render.Bind(r, data); err != nil {
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
+
+	if err == nil {
+		data := &models.EditUserRequest{}
+		if err = render.Bind(r, data); err == nil {
+		err = service.EditUser(id, data)
+		}
+	}
+
+	if err == nil {
+		render.Status(r, http.StatusOK)
+	} else if (err == service.NotFoundError) {
+		render.Status(r, http.StatusNotFound)
+	} else {
 		render.Status(r, http.StatusBadRequest)
-		return
+		render.PlainText(w, r, err.Error())
 	}
 }
 
@@ -131,7 +168,20 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  string
 // @Router       /users/{id} [get]
 func getUser(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 
+	if err == nil {
+		err = service.GetUser(id)
+	}
+
+	if err == nil {
+		render.Status(r, http.StatusOK)
+	} else if (err == service.NotFoundError) {
+		render.Status(r, http.StatusNotFound)
+	} else {
+		render.Status(r, http.StatusBadRequest)
+		render.PlainText(w, r, err.Error())
+	}
 }
 
 // getUsers godoc
@@ -147,7 +197,16 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  string
 // @Router       /users [get]
 func getUsers(w http.ResponseWriter, r *http.Request) {
+	err := service.GetUsers(0, 10)
 
+	if err == nil {
+		render.Status(r, http.StatusOK)
+	} else if (err == service.NotFoundError) {
+		render.Status(r, http.StatusNotFound)
+	} else {
+		render.Status(r, http.StatusBadRequest)
+		render.PlainText(w, r, err.Error())
+	}
 }
 
 // removeUser godoc
@@ -157,11 +216,24 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
-// @Success      204  {object}  models.UserData
+// @Success      200  {object}	string
 // @Failure      400  {object}  string
 // @Failure      404  {object}  string
 // @Failure      500  {object}  string
 // @Router       /users/{id} [delete]
 func removeUser(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 
+	if err == nil {
+		err = service.RemoveUser(id)
+	}
+
+	if err == nil {
+		render.Status(r, http.StatusOK)
+	} else if (err == service.NotFoundError) {
+		render.Status(r, http.StatusNotFound)
+	} else {
+		render.Status(r, http.StatusBadRequest)
+		render.PlainText(w, r, err.Error())
+	}
 }

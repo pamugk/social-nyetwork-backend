@@ -233,10 +233,10 @@
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserData"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -386,6 +386,7 @@
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 },
                 "password": {
@@ -470,6 +471,7 @@
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 },
                 "phone": {
@@ -601,6 +603,7 @@
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 },
                 "phone": {
@@ -653,6 +656,7 @@
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 }
             }

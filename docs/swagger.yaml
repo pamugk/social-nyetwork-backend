@@ -42,6 +42,7 @@ definitions:
       name:
         description: User full name
         example: User Usersson
+        maxLength: 1500
         type: string
       password:
         description: User password
@@ -109,6 +110,7 @@ definitions:
       name:
         description: User full name
         example: User Usersson
+        maxLength: 1500
         type: string
       phone:
         description: User main phone number
@@ -209,6 +211,7 @@ definitions:
       name:
         description: User full name
         example: User Usersson
+        maxLength: 1500
         type: string
       phone:
         description: User main phone number
@@ -252,6 +255,7 @@ definitions:
       name:
         description: User full name
         example: User Usersson
+        maxLength: 1500
         type: string
     required:
     - birthday
@@ -343,10 +347,10 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
           schema:
-            $ref: '#/definitions/models.UserData'
+            type: string
         "400":
           description: Bad Request
           schema:

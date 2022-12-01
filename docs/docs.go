@@ -241,10 +241,10 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserData"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -394,6 +394,7 @@ const docTemplate = `{
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 },
                 "password": {
@@ -478,6 +479,7 @@ const docTemplate = `{
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 },
                 "phone": {
@@ -609,6 +611,7 @@ const docTemplate = `{
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 },
                 "phone": {
@@ -661,6 +664,7 @@ const docTemplate = `{
                 "name": {
                     "description": "User full name",
                     "type": "string",
+                    "maxLength": 1500,
                     "example": "User Usersson"
                 }
             }
