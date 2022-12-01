@@ -27,6 +27,15 @@ func ErrRender(err error, status int) render.Renderer {
 	}
 }
 
+type NewEntityResponse struct {
+	Id int64
+}
+
+func (e *NewEntityResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	render.Status(r, http.StatusCreated)
+	return nil
+}
+
 // @Description Pagination response info
 type Page struct {
 	PageNumber int // Number of returned page

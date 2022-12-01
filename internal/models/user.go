@@ -27,9 +27,17 @@ type GetUserResponse struct {
 	*UserData
 }
 
+func (response* GetUserResponse)Render (w http.ResponseWriter, r *http.Request)  error{
+	return nil
+}
+
 type GetUsersResponse struct {
 	Items []*UserItem // Found items
 	*Page
+}
+
+func (response* GetUsersResponse)Render (w http.ResponseWriter, r *http.Request)  error{
+	return nil
 }
 
 type Gender string
@@ -62,12 +70,12 @@ func (*PasswordData) Bind(r *http.Request) error {
 type UserData struct {
 	*ShortUserData
 
-	Phone string `example:"+78005553535" json:"phone" validate:"e164"`                 // User main phone number
-	Email string `example:"example@example.com" json:"email" validate:"email,max=320"` // User main e-mail
+	Phone* string `example:"+78005553535" json:"phone" validate:"e164"`                 // User main phone number
+	Email* string `example:"example@example.com" json:"email" validate:"email,max=320"` // User main e-mail
 
-	About         string `example:"Some useful and interesting info" json:"about" validate:"max=1000"` // Short user self-description
+	About*         string `example:"Some useful and interesting info" json:"about" validate:"max=1000"` // Short user self-description
 	Country       string `example:"RU" json:"country" validate:"required,iso3166_1_alpha2"`            // User country code
-	CountryRegion string `example:"RU-PER" json:"country" validate:"iso3166_2"`                        // User country region code
+	CountryRegion* string `example:"RU-PER" json:"country" validate:"iso3166_2"`                        // User country region code
 	Currency      string `example:"RUB" json:"currency" validate:"required,iso4217"`                   // User preferred currency code
 	Language      string `example:"ru_RU" json:"language" validate:"required,bcp47_language_tag"`      // User preferred language code
 	Timezone      string `example:"UTC" json:"timezone" validate:"required,timezone"`                  // User timezone
