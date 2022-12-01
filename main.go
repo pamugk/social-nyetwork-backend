@@ -70,8 +70,8 @@ func main() {
 // @Param        id   path      int  true  "User ID"
 // @Param        request   body      models.PasswordData  true  "New password data"
 // @Success      200  {object}  string
-// @Failure      400  {object}  string
-// @Failure      404  {object}  string
+// @Failure      400  {object}  models.ErrResponse
+// @Failure      404  {object}  models.ErrResponse
 // @Failure      500  {object}  string
 // @Router       /users/{id}/password [put]
 func changeUserPassword(w http.ResponseWriter, r *http.Request) {
@@ -84,14 +84,16 @@ func changeUserPassword(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var renderer render.Renderer = nil
 	if err == nil {
 		render.Status(r, http.StatusOK)
 	} else if (err == service.NotFoundError) {
-		render.Status(r, http.StatusNotFound)
+		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
-		render.Status(r, http.StatusBadRequest)
-		render.PlainText(w, r, err.Error())
+		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
+
+	render.Render(w, r, renderer)
 }
 
 // createUser godoc
@@ -102,24 +104,24 @@ func changeUserPassword(w http.ResponseWriter, r *http.Request) {
 // @Produce      json
 // @Param        request   body      models.CreateUserRequest  true  "New user data"
 // @Success      201  {object}  models.UserData
-// @Failure      400  {object}  string
+// @Failure      400  {object}  models.ErrResponse
 // @Failure      500  {object}  string
 // @Router       /users [post]
 func createUser(w http.ResponseWriter, r *http.Request) {
 	data := &models.CreateUserRequest{}
 	err := render.Bind(r, data)
-	if err = nil {
-		err = service.CreateUser(data)
+	if err == nil {
+		_, err = service.CreateUser(data)
 	}
 
+	var renderer render.Renderer = nil
 	if err == nil {
 		render.Status(r, http.StatusCreated)
-	} else if (err == service.NotFoundError) {
-		render.Status(r, http.StatusNotFound)
 	} else {
-		render.Status(r, http.StatusBadRequest)
-		render.PlainText(w, r, err.Error())
+		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
+
+	render.Render(w, r, renderer)
 }
 
 // editUser godoc
@@ -131,8 +133,8 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 // @Param        id   path      int  true  "User ID"
 // @Param        request   body      models.EditUserRequest  true  "Updated user data"
 // @Success      200  {object}  models.UserData
-// @Failure      400  {object}  string
-// @Failure      404  {object}  string
+// @Failure      400  {object}  models.ErrResponse
+// @Failure      404  {object}  models.ErrResponse
 // @Failure      500  {object}  string
 // @Router       /users/{id} [put]
 func editUser(w http.ResponseWriter, r *http.Request) {
@@ -145,14 +147,16 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	var renderer render.Renderer = nil
 	if err == nil {
 		render.Status(r, http.StatusOK)
-	} else if (err == service.NotFoundError) {
-		render.Status(r, http.StatusNotFound)
+	} else if err == service.NotFoundError {
+		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
-		render.Status(r, http.StatusBadRequest)
-		render.PlainText(w, r, err.Error())
+		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
+
+	render.Render(w, r, renderer)
 }
 
 // getUser godoc
@@ -163,8 +167,8 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
 // @Success      200  {object}  models.UserData
-// @Failure      400  {object}  string
-// @Failure      404  {object}  string
+// @Failure      400  {object}  models.ErrResponse
+// @Failure      404  {object}  models.ErrResponse
 // @Failure      500  {object}  string
 // @Router       /users/{id} [get]
 func getUser(w http.ResponseWriter, r *http.Request) {
@@ -174,14 +178,16 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 		err = service.GetUser(id)
 	}
 
+	var renderer render.Renderer = nil
 	if err == nil {
 		render.Status(r, http.StatusOK)
-	} else if (err == service.NotFoundError) {
-		render.Status(r, http.StatusNotFound)
+	} else if err == service.NotFoundError {
+		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
-		render.Status(r, http.StatusBadRequest)
-		render.PlainText(w, r, err.Error())
+		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
+
+	render.Render(w, r, renderer)
 }
 
 // getUsers godoc
@@ -193,20 +199,22 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 // @Param        page   query      int  false  "Page number"
 // @Param        pageSize   query  int  false  "Page size"
 // @Success      200  {object}  models.GetUsersResponse
-// @Failure      400  {object}  string
+// @Failure      400  {object}  models.ErrResponse
 // @Failure      500  {object}  string
 // @Router       /users [get]
 func getUsers(w http.ResponseWriter, r *http.Request) {
 	err := service.GetUsers(0, 10)
 
+	var renderer render.Renderer = nil
 	if err == nil {
 		render.Status(r, http.StatusOK)
-	} else if (err == service.NotFoundError) {
-		render.Status(r, http.StatusNotFound)
+	} else if err == service.NotFoundError {
+		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
-		render.Status(r, http.StatusBadRequest)
-		render.PlainText(w, r, err.Error())
+		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
+
+	render.Render(w, r, renderer)
 }
 
 // removeUser godoc
@@ -217,8 +225,8 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
 // @Success      200  {object}	string
-// @Failure      400  {object}  string
-// @Failure      404  {object}  string
+// @Failure      400  {object}  models.ErrResponse
+// @Failure      404  {object}  models.ErrResponse
 // @Failure      500  {object}  string
 // @Router       /users/{id} [delete]
 func removeUser(w http.ResponseWriter, r *http.Request) {
@@ -228,12 +236,14 @@ func removeUser(w http.ResponseWriter, r *http.Request) {
 		err = service.RemoveUser(id)
 	}
 
+	var renderer render.Renderer = nil
 	if err == nil {
 		render.Status(r, http.StatusOK)
-	} else if (err == service.NotFoundError) {
-		render.Status(r, http.StatusNotFound)
+	} else if err == service.NotFoundError {
+		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
-		render.Status(r, http.StatusBadRequest)
-		render.PlainText(w, r, err.Error())
+		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
+
+	render.Render(w, r, renderer)
 }

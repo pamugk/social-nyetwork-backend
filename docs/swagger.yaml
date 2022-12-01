@@ -130,6 +130,11 @@ definitions:
     - name
     - timezone
     type: object
+  models.ErrResponse:
+    properties:
+      error:
+        type: string
+    type: object
   models.Gender:
     enum:
     - ""
@@ -296,7 +301,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -325,7 +330,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -354,11 +359,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "404":
           description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -386,11 +391,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "404":
           description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -424,11 +429,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "404":
           description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -459,15 +464,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.UserData'
+            type: string
         "400":
           description: Bad Request
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "404":
           description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrResponse'
         "500":
           description: Internal Server Error
           schema:

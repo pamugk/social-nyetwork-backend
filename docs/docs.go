@@ -57,7 +57,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "500": {
@@ -101,7 +101,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "500": {
@@ -145,13 +145,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "500": {
@@ -202,13 +202,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "500": {
@@ -250,13 +250,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "500": {
@@ -303,19 +303,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserData"
+                            "type": "string"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrResponse"
                         }
                     },
                     "500": {
@@ -491,6 +491,14 @@ const docTemplate = `{
                     "description": "User timezone",
                     "type": "string",
                     "example": "UTC"
+                }
+            }
+        },
+        "models.ErrResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
                 }
             }
         },
