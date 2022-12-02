@@ -1,9 +1,9 @@
 package service
 
 import (
-    "errors"
+	"errors"
 )
 
 var (
-    NotFoundError = errors.New("Not found")
+	NotFoundError = errors.New("Not found")
 )

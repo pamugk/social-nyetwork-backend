@@ -18,7 +18,7 @@ CREATE TABLE public."user" (
 	
 	about varchar(1000) NULL,
 	country char(2) NOT NULL,
-	country_region varchar(6) NOT NULL,
+	country_region varchar(6) NULL,
 	currency char(3) NOT NULL,
 	language varchar(35) NOT NULL,
 	timezone varchar(50) NOT NULL,

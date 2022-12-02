@@ -20,15 +20,15 @@ func (e *ErrResponse) Render(w http.ResponseWriter, r *http.Request) error {
 
 func ErrRender(err error, status int) render.Renderer {
 	return &ErrResponse{
-		Err: err,
+		Err:            err,
 		HTTPStatusCode: status,
 
-		ErrorText:  err.Error(),
+		ErrorText: err.Error(),
 	}
 }
 
 type NewEntityResponse struct {
-	Id int64
+	Id int64 `json:"id"`
 }
 
 func (e *NewEntityResponse) Render(w http.ResponseWriter, r *http.Request) error {
@@ -36,9 +36,15 @@ func (e *NewEntityResponse) Render(w http.ResponseWriter, r *http.Request) error
 	return nil
 }
 
+type SuccessResponse struct{}
+
+func (e *SuccessResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}
+
 // @Description Pagination response info
 type Page struct {
-	PageNumber int // Number of returned page
-	PageSize   int // Max page size
-	TotalItems int // Total count of found items
+	PageNumber int `json:"page_number"` // Number of returned page
+	PageSize   int `json:"page_size"` // Max page size
+	TotalItems int `json:"total_items"` // Total count of found items
 }

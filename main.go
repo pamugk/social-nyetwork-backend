@@ -69,7 +69,7 @@ func main() {
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
 // @Param        request   body      models.PasswordData  true  "New password data"
-// @Success      200  {object}  string
+// @Success      200  {object}  models.SuccessResponse
 // @Failure      400  {object}  models.ErrResponse
 // @Failure      404  {object}  models.ErrResponse
 // @Failure      500  {object}  string
@@ -86,8 +86,8 @@ func changeUserPassword(w http.ResponseWriter, r *http.Request) {
 
 	var renderer render.Renderer = nil
 	if err == nil {
-		render.Status(r, http.StatusOK)
-	} else if (err == service.NotFoundError) {
+		renderer = &models.SuccessResponse{}
+	} else if err == service.NotFoundError {
 		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
 		renderer = models.ErrRender(err, http.StatusBadRequest)
@@ -110,13 +110,14 @@ func changeUserPassword(w http.ResponseWriter, r *http.Request) {
 func createUser(w http.ResponseWriter, r *http.Request) {
 	data := &models.CreateUserRequest{}
 	err := render.Bind(r, data)
+	var id int64 = -1
 	if err == nil {
-		_, err = service.CreateUser(data)
+		id, err = service.CreateUser(data)
 	}
 
 	var renderer render.Renderer = nil
 	if err == nil {
-		render.Status(r, http.StatusCreated)
+		renderer = &models.NewEntityResponse{Id: id}
 	} else {
 		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
@@ -132,7 +133,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
 // @Param        request   body      models.EditUserRequest  true  "Updated user data"
-// @Success      200  {object}  models.UserData
+// @Success      200  {object}  models.SuccessResponse
 // @Failure      400  {object}  models.ErrResponse
 // @Failure      404  {object}  models.ErrResponse
 // @Failure      500  {object}  string
@@ -143,13 +144,13 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		data := &models.EditUserRequest{}
 		if err = render.Bind(r, data); err == nil {
-		err = service.EditUser(id, data)
+			err = service.EditUser(id, data)
 		}
 	}
 
 	var renderer render.Renderer = nil
 	if err == nil {
-		render.Status(r, http.StatusOK)
+		renderer = &models.SuccessResponse{}
 	} else if err == service.NotFoundError {
 		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
@@ -174,16 +175,14 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 func getUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 
-	if err == nil {
-		err = service.GetUser(id)
-	}
-
 	var renderer render.Renderer = nil
 	if err == nil {
-		render.Status(r, http.StatusOK)
-	} else if err == service.NotFoundError {
+		renderer, err = service.GetUser(id)
+	}
+
+	if err == service.NotFoundError {
 		renderer = models.ErrRender(err, http.StatusNotFound)
-	} else {
+	} else if err != nil {
 		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
 
@@ -203,14 +202,12 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 // @Failure      500  {object}  string
 // @Router       /users [get]
 func getUsers(w http.ResponseWriter, r *http.Request) {
-	err := service.GetUsers(0, 10)
+	var renderer render.Renderer
+	renderer, err := service.GetUsers(0, 10)
 
-	var renderer render.Renderer = nil
-	if err == nil {
-		render.Status(r, http.StatusOK)
-	} else if err == service.NotFoundError {
+	if err == service.NotFoundError {
 		renderer = models.ErrRender(err, http.StatusNotFound)
-	} else {
+	} else if err != nil {
 		renderer = models.ErrRender(err, http.StatusBadRequest)
 	}
 
@@ -224,7 +221,7 @@ func getUsers(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        id   path      int  true  "User ID"
-// @Success      200  {object}	string
+// @Success      200  {object}	models.SuccessResponse
 // @Failure      400  {object}  models.ErrResponse
 // @Failure      404  {object}  models.ErrResponse
 // @Failure      500  {object}  string
@@ -238,7 +235,7 @@ func removeUser(w http.ResponseWriter, r *http.Request) {
 
 	var renderer render.Renderer = nil
 	if err == nil {
-		render.Status(r, http.StatusOK)
+		renderer = &models.SuccessResponse{}
 	} else if err == service.NotFoundError {
 		renderer = models.ErrRender(err, http.StatusNotFound)
 	} else {
