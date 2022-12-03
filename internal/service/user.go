@@ -13,6 +13,10 @@ import (
 )
 
 func ChangeUserPassword(id int64, request *models.PasswordData) error {
+	if err := validate.Struct(request); err != nil {
+		return err
+	}
+	
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 
 	if err != nil {
@@ -33,18 +37,22 @@ func ChangeUserPassword(id int64, request *models.PasswordData) error {
 
 func CreateUser(request *models.CreateUserRequest) (id int64, err error) {
 	id = -1
-
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
-
+	
+	err = validate.Struct(request)
 	if err == nil {
-        generatedId := dbpool.QueryRow(context.Background(),
-            "INSERT INTO \"user\" (login, password, full_name, birthday, gender, phone, email, about, country, country_region, currency, language, timezone) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
-            request.Login, hashedPassword, request.FullName, request.Birthday, request.Gender,
-            trimString(request.Phone), trimString(request.Email), trimString(request.About),
-            request.Country, trimString(request.CountryRegion), request.Currency, request.Language, request.Timezone)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(request.Password), bcrypt.DefaultCost)
 
-        err = generatedId.Scan(&id)
+		if err == nil {
+			generatedId := dbpool.QueryRow(context.Background(),
+				"INSERT INTO \"user\" (login, password, full_name, birthday, gender, phone, email, about, country, country_region, currency, language, timezone) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id",
+				request.Login, hashedPassword, request.FullName, request.Birthday, request.Gender,
+				trimString(request.Phone), trimString(request.Email), trimString(request.About),
+				request.Country, trimString(request.CountryRegion), request.Currency, request.Language, request.Timezone)
+
+			err = generatedId.Scan(&id)
+		}
 	}
+
 
 	return id, err
 }
@@ -94,6 +102,10 @@ func GetUsers(page int, pageSize int) (response *models.GetUsersResponse, err er
 }
 
 func EditUser(id int64, request *models.EditUserRequest) error {
+	if err := validate.Struct(request); err != nil {
+		return err
+	}
+	
 	result, err := dbpool.Exec(context.Background(),
 		"UPDATE \"user\" SET full_name = $2, birthday = $3, gender = $4, phone = $5, email = $6, about = $7, country = $8, country_region = $9, currency = $10, language = $11, timezone = $12, last_modified = $13 WHERE id = $1 AND active",
 		id, request.FullName, request.Birthday, request.Gender,

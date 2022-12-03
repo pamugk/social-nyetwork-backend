@@ -12,6 +12,10 @@ definitions:
         example: "2022-01-01"
         type: string
       country:
+        description: User country code
+        example: RU
+        type: string
+      country_region:
         description: User country region code
         example: RU-PER
         type: string
@@ -80,6 +84,10 @@ definitions:
         example: "2022-01-01"
         type: string
       country:
+        description: User country code
+        example: RU
+        type: string
+      country_region:
         description: User country region code
         example: RU-PER
         type: string
@@ -152,13 +160,13 @@ definitions:
         items:
           $ref: '#/definitions/models.UserItem'
         type: array
-      pageNumber:
+      page_number:
         description: Number of returned page
         type: integer
-      pageSize:
+      page_size:
         description: Max page size
         type: integer
-      totalItems:
+      total_items:
         description: Total count of found items
         type: integer
     type: object
@@ -173,6 +181,8 @@ definitions:
     required:
     - password
     type: object
+  models.SuccessResponse:
+    type: object
   models.UserData:
     description: User full info
     properties:
@@ -186,6 +196,10 @@ definitions:
         example: "2022-01-01"
         type: string
       country:
+        description: User country code
+        example: RU
+        type: string
+      country_region:
         description: User country region code
         example: RU-PER
         type: string
@@ -355,7 +369,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/models.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -425,7 +439,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.UserData'
+            $ref: '#/definitions/models.SuccessResponse'
         "400":
           description: Bad Request
           schema:
@@ -464,7 +478,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/models.SuccessResponse'
         "400":
           description: Bad Request
           schema:

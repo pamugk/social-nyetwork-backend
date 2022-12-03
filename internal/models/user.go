@@ -52,7 +52,7 @@ type ShortUserData struct {
 	Login    string `example:"user" json:"login" validate:"required,min=3,max=255,alphanum"` // User login
 	FullName string `example:"User Usersson" json:"name" validate:"required,max=1500"`       // User full name
 
-	Birthday string `example:"2022-01-01" json:"birthday" validate:"required"` // User birthday
+	Birthday string `example:"2022-01-01" json:"birthday" validate:"required,iso-date,present"` // User birthday
 	Gender   Gender `example:"MALE" json:"gender" validate:"required"`         // User gender
 }
 
@@ -74,7 +74,7 @@ type UserData struct {
 
 	About         *string `example:"Some useful and interesting info" json:"about" validate:"max=1000"` // Short user self-description
 	Country       string  `example:"RU" json:"country" validate:"required,iso3166_1_alpha2"`            // User country code
-	CountryRegion *string `example:"RU-PER" json:"country" validate:"iso3166_2"`                        // User country region code
+	CountryRegion *string `example:"RU-PER" json:"country_region" validate:"iso3166_2"`                 // User country region code
 	Currency      string  `example:"RUB" json:"currency" validate:"required,iso4217"`                   // User preferred currency code
 	Language      string  `example:"ru_RU" json:"language" validate:"required,bcp47_language_tag"`      // User preferred language code
 	Timezone      string  `example:"UTC" json:"timezone" validate:"required,timezone"`                  // User timezone

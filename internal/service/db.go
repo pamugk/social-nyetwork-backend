@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -27,11 +26,4 @@ func CloseDbPool() {
 	if dbpool != nil {
 		dbpool.Close()
 	}
-}
-
-func unwrap(text pgtype.Text)*string {
-	if (text.Valid) {
-		return &text.String
-	}
-	return nil
 }

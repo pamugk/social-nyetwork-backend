@@ -196,7 +196,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.UserData"
+                            "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
                     "400": {
@@ -244,7 +244,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
                     "400": {
@@ -303,7 +303,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
                     "400": {
@@ -355,6 +355,11 @@ const docTemplate = `{
                     "example": "2022-01-01"
                 },
                 "country": {
+                    "description": "User country code",
+                    "type": "string",
+                    "example": "RU"
+                },
+                "country_region": {
                     "description": "User country region code",
                     "type": "string",
                     "example": "RU-PER"
@@ -440,6 +445,11 @@ const docTemplate = `{
                     "example": "2022-01-01"
                 },
                 "country": {
+                    "description": "User country code",
+                    "type": "string",
+                    "example": "RU"
+                },
+                "country_region": {
                     "description": "User country region code",
                     "type": "string",
                     "example": "RU-PER"
@@ -525,15 +535,15 @@ const docTemplate = `{
                         "$ref": "#/definitions/models.UserItem"
                     }
                 },
-                "pageNumber": {
+                "page_number": {
                     "description": "Number of returned page",
                     "type": "integer"
                 },
-                "pageSize": {
+                "page_size": {
                     "description": "Max page size",
                     "type": "integer"
                 },
-                "totalItems": {
+                "total_items": {
                     "description": "Total count of found items",
                     "type": "integer"
                 }
@@ -553,6 +563,9 @@ const docTemplate = `{
                     "example": "password"
                 }
             }
+        },
+        "models.SuccessResponse": {
+            "type": "object"
         },
         "models.UserData": {
             "description": "User full info",
@@ -580,6 +593,11 @@ const docTemplate = `{
                     "example": "2022-01-01"
                 },
                 "country": {
+                    "description": "User country code",
+                    "type": "string",
+                    "example": "RU"
+                },
+                "country_region": {
                     "description": "User country region code",
                     "type": "string",
                     "example": "RU-PER"
