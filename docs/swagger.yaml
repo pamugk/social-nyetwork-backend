@@ -1,5 +1,22 @@
 basePath: /api/v1
 definitions:
+  models.CreateMessageRequest:
+    properties:
+      recipient:
+        description: Recieving user
+        example: 2
+        type: integer
+      sender:
+        description: Sending user
+        example: 1
+        type: integer
+      text:
+        description: Message text
+        example: A message that need to be sent
+        type: string
+    required:
+    - text
+    type: object
   models.CreateUserRequest:
     properties:
       about:
@@ -165,6 +182,15 @@ definitions:
         description: Total count of found items
         type: integer
     type: object
+  models.MessageData:
+    properties:
+      text:
+        description: Message text
+        example: A message that need to be sent
+        type: string
+    required:
+    - text
+    type: object
   models.NewEntityResponse:
     properties:
       id:
@@ -289,6 +315,182 @@ info:
   title: Social Nyetwork Swagger
   version: "1.0"
 paths:
+  /messages:
+    get:
+      consumes:
+      - application/json
+      description: Get list of messages by filters
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetUsersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - TokenAuth: []
+      summary: Get messages
+      tags:
+      - messages
+    post:
+      consumes:
+      - application/json
+      description: Create new message, sent from one user to another
+      parameters:
+      - description: New message data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateMessageRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - TokenAuth: []
+      summary: Create message
+      tags:
+      - users
+  /messages/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete message
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - TokenAuth: []
+      summary: Delete message
+      tags:
+      - messages
+    put:
+      consumes:
+      - application/json
+      description: Update message text
+      parameters:
+      - description: Message ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated password data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.MessageData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - TokenAuth: []
+      summary: Edit message
+      tags:
+      - messages
   /users:
     get:
       consumes:
@@ -312,6 +514,10 @@ paths:
             $ref: '#/definitions/models.GetUsersResponse'
         "400":
           description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
           schema:
             type: string
         "500":
@@ -374,6 +580,14 @@ paths:
           description: Bad Request
           schema:
             type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
         "404":
           description: Not Found
           schema:
@@ -406,6 +620,10 @@ paths:
             $ref: '#/definitions/models.UserData'
         "400":
           description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
           schema:
             type: string
         "404":
@@ -448,6 +666,14 @@ paths:
           description: Bad Request
           schema:
             type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
         "404":
           description: Not Found
           schema:
@@ -487,6 +713,14 @@ paths:
             type: string
         "400":
           description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
           schema:
             type: string
         "404":
@@ -551,6 +785,10 @@ paths:
             type: string
         "400":
           description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
           schema:
             type: string
         "500":
