@@ -138,11 +138,6 @@ definitions:
     - name
     - timezone
     type: object
-  models.ErrResponse:
-    properties:
-      error:
-        type: string
-    type: object
   models.Gender:
     enum:
     - ""
@@ -170,6 +165,11 @@ definitions:
         description: Total count of found items
         type: integer
     type: object
+  models.NewEntityResponse:
+    properties:
+      id:
+        type: integer
+    type: object
   models.PasswordData:
     description: Password definition
     properties:
@@ -180,8 +180,6 @@ definitions:
         type: string
     required:
     - password
-    type: object
-  models.SuccessResponse:
     type: object
   models.UserData:
     description: User full info
@@ -315,11 +313,13 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "500":
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - TokenAuth: []
       summary: Search users
       tags:
       - users
@@ -340,11 +340,11 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.UserData'
+            $ref: '#/definitions/models.NewEntityResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "500":
           description: Internal Server Error
           schema:
@@ -369,19 +369,21 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.SuccessResponse'
+            type: string
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "500":
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - TokenAuth: []
       summary: Delete user
       tags:
       - users
@@ -405,15 +407,17 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "500":
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - TokenAuth: []
       summary: Get full user info
       tags:
       - users
@@ -439,19 +443,21 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.SuccessResponse'
+            type: string
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "500":
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - TokenAuth: []
       summary: Edit user info
       tags:
       - users
@@ -478,20 +484,82 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.SuccessResponse'
+            type: string
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/models.ErrResponse'
+            type: string
         "500":
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - TokenAuth: []
       summary: Change user password
+      tags:
+      - users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs user in
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Log in
+      tags:
+      - users
+  /users/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logs user out
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - TokenAuth: []
+      summary: Log out
       tags:
       - users
 swagger: "2.0"

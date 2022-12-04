@@ -22,6 +22,11 @@ const docTemplate = `{
     "paths": {
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
                 "description": "Search users by some filters",
                 "consumes": [
                     "application/json"
@@ -57,7 +62,7 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -95,13 +100,106 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.UserData"
+                            "$ref": "#/definitions/models.NewEntityResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "description": "Logs user in",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Log in",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/logout": {
+            "post": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
+                "description": "Logs user out",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Log out",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -115,6 +213,11 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
                 "description": "Get user info by ID",
                 "consumes": [
                     "application/json"
@@ -145,13 +248,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -163,6 +266,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
                 "description": "Update user information",
                 "consumes": [
                     "application/json"
@@ -196,19 +304,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -220,6 +328,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
                 "description": "Delete user by ID",
                 "consumes": [
                     "application/json"
@@ -244,19 +357,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -270,6 +383,11 @@ const docTemplate = `{
         },
         "/users/{id}/password": {
             "put": {
+                "security": [
+                    {
+                        "TokenAuth": []
+                    }
+                ],
                 "description": "Change user password",
                 "consumes": [
                     "application/json"
@@ -303,19 +421,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
+                            "type": "string"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.ErrResponse"
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -504,14 +622,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ErrResponse": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "type": "string"
-                }
-            }
-        },
         "models.Gender": {
             "type": "string",
             "enum": [
@@ -549,6 +659,14 @@ const docTemplate = `{
                 }
             }
         },
+        "models.NewEntityResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.PasswordData": {
             "description": "Password definition",
             "type": "object",
@@ -563,9 +681,6 @@ const docTemplate = `{
                     "example": "password"
                 }
             }
-        },
-        "models.SuccessResponse": {
-            "type": "object"
         },
         "models.UserData": {
             "description": "User full info",

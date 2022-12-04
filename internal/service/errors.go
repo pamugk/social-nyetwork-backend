@@ -6,4 +6,5 @@ import (
 
 var (
 	NotFoundError = errors.New("Not found")
+	WrongCredentialsError = errors.New("Wrong credentials")
 )

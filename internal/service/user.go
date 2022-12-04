@@ -121,6 +121,22 @@ func EditUser(id int64, request *models.EditUserRequest) error {
 	return nil
 }
 
+func StartSession(login string, password string) (id int64, err error) {
+	result := dbpool.QueryRow(context.Background(),
+							  "SELECT id, password FROM \"user\" WHERE login = $1 AND active", login)
+	var storedPassword []byte
+	err = result.Scan(&id, &storedPassword)
+	if err == pgx.ErrNoRows {
+		err = NotFoundError
+	} else if err == nil {
+		err = bcrypt.CompareHashAndPassword(storedPassword, []byte(password))
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			err = WrongCredentialsError
+		}
+	}
+	return id, err
+}
+
 func RemoveUser(id int64) error {
 	result, err := dbpool.Exec(context.Background(),
 		"UPDATE \"user\" SET active = FALSE WHERE id = $1 AND active", id)
