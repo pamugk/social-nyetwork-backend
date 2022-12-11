@@ -14,25 +14,25 @@ import (
 )
 
 func InitUserRoutes(r chi.Router) {
-    r.Route("/users", func(r chi.Router) {
-        r.Post("/", createUser)
-        r.Post("/login", login)
+	r.Route("/users", func(r chi.Router) {
+		r.Post("/", createUser)
+		r.Post("/login", login)
 
-        r.Route("/", func(r chi.Router) {
-            r.Use(jwtauth.Verifier(tokenAuth))
-            r.Use(jwtauth.Authenticator)
+		r.Route("/", func(r chi.Router) {
+			r.Use(jwtauth.Verifier(tokenAuth))
+			r.Use(jwtauth.Authenticator)
 
-            r.Get("/", getUsers)
-            r.Post("/logout", logout)
-            r.Route("/{id:^-?\\d+}", func(r chi.Router) {
-                r.Get("/", getUser)
-                r.Put("/", editUser)
-                r.Delete("/", removeUser)
+			r.Get("/", getUsers)
+			r.Post("/logout", logout)
+			r.Route("/{id:^-?\\d+}", func(r chi.Router) {
+				r.Get("/", getUser)
+				r.Put("/", editUser)
+				r.Delete("/", removeUser)
 
-                r.Put("/password", changeUserPassword)
-            })
-        })
-    })
+				r.Put("/password", changeUserPassword)
+			})
+		})
+	})
 }
 
 // changeUserPassword godoc
@@ -81,7 +81,7 @@ func changeUserPassword(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        request   body      models.CreateUserRequest  true  "New user data"
-// @Success      201  {object}  models.NewEntityResponse
+// @Success      201  {object}  models.NewEntityResponse[int64]
 // @Failure      400  {object}  string
 // @Failure      500  {object}  string
 // @Router       /users [post]
@@ -93,14 +93,11 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 		id, err = service.CreateUser(data)
 	}
 
-	var renderer render.Renderer = nil
 	if err == nil {
-		renderer = &models.NewEntityResponse{Id: id}
+		render.Render(w, r, &models.NewEntityResponse[int64]{Id: id})
 	} else {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
-
-	render.Render(w, r, renderer)
 }
 
 // editUser godoc
@@ -137,7 +134,7 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 
 	if err == service.NotFoundError {
 		http.Error(w, "User not found", http.StatusNotFound)
-	} else if err != nil{
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
@@ -160,7 +157,7 @@ func editUser(w http.ResponseWriter, r *http.Request) {
 func getUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 64)
 
-	var response* models.GetUserResponse = nil
+	var response *models.GetUserResponse = nil
 	if err == nil {
 		response, err = service.GetUser(id)
 	}
@@ -189,11 +186,25 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 // @Router       /users [get]
 // @Security TokenAuth
 func getUsers(w http.ResponseWriter, r *http.Request) {
-	response, err := service.GetUsers(0, 10)
+	page := 0
+	pageSize := 10
+
+	 if r.URL.Query().Has("page") {
+		 val, err := strconv.ParseInt(r.URL.Query().Get("page"), 10, 32)
+		 if err == nil {
+			 page = int(val)
+		}
+	}
+	 if r.URL.Query().Has("pageSize") {
+		 val, err := strconv.ParseInt(r.URL.Query().Get("pageSize"), 10, 32)
+		 if err == nil {
+			 page = int(val)
+		}
+	}
+
+	response, err := service.GetUsers(page, pageSize)
 	if err == nil {
 		render.Render(w, r, response)
-	} else if err == service.NotFoundError {
-		http.Error(w, "User not found", http.StatusNotFound)
 	} else {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -217,7 +228,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		var tokenString string
 		id, err := service.StartSession(login, password)
 		if err == nil {
-			_, tokenString, err = tokenAuth.Encode(map[string]interface{}{ "userId": id })
+			_, tokenString, err = tokenAuth.Encode(map[string]interface{}{"userId": id})
 		}
 
 		if err == nil {
@@ -281,7 +292,7 @@ func removeUser(w http.ResponseWriter, r *http.Request) {
 
 	if err == service.NotFoundError {
 		http.Error(w, "User not found", http.StatusNotFound)
-	}  else if err != nil {
+	} else if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 }

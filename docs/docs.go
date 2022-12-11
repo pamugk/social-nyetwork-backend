@@ -41,6 +41,20 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "Sending user id",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Receiving user id",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
                         "description": "Page number",
                         "name": "page",
                         "in": "query"
@@ -56,7 +70,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetUsersResponse"
+                            "$ref": "#/definitions/models.GetMessagesResponse"
                         }
                     },
                     "400": {
@@ -99,7 +113,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "messages"
                 ],
                 "summary": "Create message",
                 "parameters": [
@@ -114,10 +128,10 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.NewEntityResponse-string"
                         }
                     },
                     "400": {
@@ -134,12 +148,6 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -180,7 +188,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Updated password data",
+                        "description": "Updated message data",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -380,7 +388,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.NewEntityResponse"
+                            "$ref": "#/definitions/models.NewEntityResponse-int64"
                         }
                     },
                     "400": {
@@ -986,6 +994,30 @@ const docTemplate = `{
                 "Female"
             ]
         },
+        "models.GetMessagesResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "description": "Found items",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MessageItem"
+                    }
+                },
+                "page_number": {
+                    "description": "Number of returned page",
+                    "type": "integer"
+                },
+                "page_size": {
+                    "description": "Max page size",
+                    "type": "integer"
+                },
+                "total_items": {
+                    "description": "Total count of found items",
+                    "type": "integer"
+                }
+            }
+        },
         "models.GetUsersResponse": {
             "type": "object",
             "properties": {
@@ -1023,11 +1055,65 @@ const docTemplate = `{
                 }
             }
         },
-        "models.NewEntityResponse": {
+        "models.MessageItem": {
+            "type": "object",
+            "required": [
+                "edited",
+                "id",
+                "is_received",
+                "sent",
+                "text"
+            ],
+            "properties": {
+                "edited": {
+                    "description": "Message last edit time",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Message id",
+                    "type": "string"
+                },
+                "is_received": {
+                    "description": "Whether message was received",
+                    "type": "boolean"
+                },
+                "originalID": {
+                    "description": "Original message id",
+                    "type": "string"
+                },
+                "recipient": {
+                    "description": "Recieving user",
+                    "type": "integer",
+                    "example": 2
+                },
+                "sender": {
+                    "description": "Sending user",
+                    "type": "integer",
+                    "example": 1
+                },
+                "sent": {
+                    "description": "Message creation time",
+                    "type": "string"
+                },
+                "text": {
+                    "description": "Message text",
+                    "type": "string"
+                }
+            }
+        },
+        "models.NewEntityResponse-int64": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.NewEntityResponse-string": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
                 }
             }
         },
@@ -1176,6 +1262,10 @@ const docTemplate = `{
         }
     },
     "tags": [
+        {
+            "description": "Message service",
+            "name": "messages"
+        },
         {
             "description": "User service",
             "name": "users"

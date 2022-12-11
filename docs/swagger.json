@@ -33,6 +33,20 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "Sending user id",
+                        "name": "from",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Receiving user id",
+                        "name": "to",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
                         "description": "Page number",
                         "name": "page",
                         "in": "query"
@@ -48,7 +62,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetUsersResponse"
+                            "$ref": "#/definitions/models.GetMessagesResponse"
                         }
                     },
                     "400": {
@@ -91,7 +105,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "messages"
                 ],
                 "summary": "Create message",
                 "parameters": [
@@ -106,10 +120,10 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.NewEntityResponse-string"
                         }
                     },
                     "400": {
@@ -126,12 +140,6 @@
                     },
                     "403": {
                         "description": "Forbidden",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "type": "string"
                         }
@@ -172,7 +180,7 @@
                         "required": true
                     },
                     {
-                        "description": "Updated password data",
+                        "description": "Updated message data",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -372,7 +380,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.NewEntityResponse"
+                            "$ref": "#/definitions/models.NewEntityResponse-int64"
                         }
                     },
                     "400": {
@@ -978,6 +986,30 @@
                 "Female"
             ]
         },
+        "models.GetMessagesResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "description": "Found items",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MessageItem"
+                    }
+                },
+                "page_number": {
+                    "description": "Number of returned page",
+                    "type": "integer"
+                },
+                "page_size": {
+                    "description": "Max page size",
+                    "type": "integer"
+                },
+                "total_items": {
+                    "description": "Total count of found items",
+                    "type": "integer"
+                }
+            }
+        },
         "models.GetUsersResponse": {
             "type": "object",
             "properties": {
@@ -1015,11 +1047,65 @@
                 }
             }
         },
-        "models.NewEntityResponse": {
+        "models.MessageItem": {
+            "type": "object",
+            "required": [
+                "edited",
+                "id",
+                "is_received",
+                "sent",
+                "text"
+            ],
+            "properties": {
+                "edited": {
+                    "description": "Message last edit time",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "Message id",
+                    "type": "string"
+                },
+                "is_received": {
+                    "description": "Whether message was received",
+                    "type": "boolean"
+                },
+                "originalID": {
+                    "description": "Original message id",
+                    "type": "string"
+                },
+                "recipient": {
+                    "description": "Recieving user",
+                    "type": "integer",
+                    "example": 2
+                },
+                "sender": {
+                    "description": "Sending user",
+                    "type": "integer",
+                    "example": 1
+                },
+                "sent": {
+                    "description": "Message creation time",
+                    "type": "string"
+                },
+                "text": {
+                    "description": "Message text",
+                    "type": "string"
+                }
+            }
+        },
+        "models.NewEntityResponse-int64": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.NewEntityResponse-string": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
                 }
             }
         },
@@ -1168,6 +1254,10 @@
         }
     },
     "tags": [
+        {
+            "description": "Message service",
+            "name": "messages"
+        },
         {
             "description": "User service",
             "name": "users"

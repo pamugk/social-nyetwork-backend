@@ -53,7 +53,7 @@ type ShortUserData struct {
 	FullName string `example:"User Usersson" json:"name" validate:"required,max=1500"`       // User full name
 
 	Birthday string `example:"2022-01-01" json:"birthday" validate:"required,iso-date,present"` // User birthday
-	Gender   Gender `example:"MALE" json:"gender" validate:"required"`         // User gender
+	Gender   Gender `example:"MALE" json:"gender" validate:"required"`                          // User gender
 }
 
 // @Description Password definition

@@ -165,6 +165,23 @@ definitions:
     - Undefined
     - Male
     - Female
+  models.GetMessagesResponse:
+    properties:
+      items:
+        description: Found items
+        items:
+          $ref: '#/definitions/models.MessageItem'
+        type: array
+      page_number:
+        description: Number of returned page
+        type: integer
+      page_size:
+        description: Max page size
+        type: integer
+      total_items:
+        description: Total count of found items
+        type: integer
+    type: object
   models.GetUsersResponse:
     properties:
       items:
@@ -191,10 +208,50 @@ definitions:
     required:
     - text
     type: object
-  models.NewEntityResponse:
+  models.MessageItem:
+    properties:
+      edited:
+        description: Message last edit time
+        type: string
+      id:
+        description: Message id
+        type: string
+      is_received:
+        description: Whether message was received
+        type: boolean
+      originalID:
+        description: Original message id
+        type: string
+      recipient:
+        description: Recieving user
+        example: 2
+        type: integer
+      sender:
+        description: Sending user
+        example: 1
+        type: integer
+      sent:
+        description: Message creation time
+        type: string
+      text:
+        description: Message text
+        type: string
+    required:
+    - edited
+    - id
+    - is_received
+    - sent
+    - text
+    type: object
+  models.NewEntityResponse-int64:
     properties:
       id:
         type: integer
+    type: object
+  models.NewEntityResponse-string:
+    properties:
+      id:
+        type: string
     type: object
   models.PasswordData:
     description: Password definition
@@ -321,6 +378,16 @@ paths:
       - application/json
       description: Get list of messages by filters
       parameters:
+      - description: Sending user id
+        in: query
+        name: from
+        required: true
+        type: integer
+      - description: Receiving user id
+        in: query
+        name: to
+        required: true
+        type: integer
       - description: Page number
         in: query
         name: page
@@ -335,7 +402,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.GetUsersResponse'
+            $ref: '#/definitions/models.GetMessagesResponse'
         "400":
           description: Bad Request
           schema:
@@ -371,10 +438,10 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
-            type: string
+            $ref: '#/definitions/models.NewEntityResponse-string'
         "400":
           description: Bad Request
           schema:
@@ -387,10 +454,6 @@ paths:
           description: Forbidden
           schema:
             type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
         "500":
           description: Internal Server Error
           schema:
@@ -399,7 +462,7 @@ paths:
       - TokenAuth: []
       summary: Create message
       tags:
-      - users
+      - messages
   /messages/{id}:
     delete:
       consumes:
@@ -453,7 +516,7 @@ paths:
         name: id
         required: true
         type: string
-      - description: Updated password data
+      - description: Updated message data
         in: body
         name: request
         required: true
@@ -546,7 +609,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.NewEntityResponse'
+            $ref: '#/definitions/models.NewEntityResponse-int64'
         "400":
           description: Bad Request
           schema:
@@ -802,5 +865,7 @@ paths:
       - users
 swagger: "2.0"
 tags:
+- description: Message service
+  name: messages
 - description: User service
   name: users

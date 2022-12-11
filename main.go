@@ -17,6 +17,8 @@ import (
 // @version 1.0
 // @description This is a Social Nyetwork server.
 
+// @tag.name messages
+// @tag.description Message service
 // @tag.name users
 // @tag.description User service
 

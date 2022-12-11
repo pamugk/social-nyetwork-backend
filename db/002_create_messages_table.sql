@@ -1,5 +1,7 @@
+CREATE EXTENSION "uuid-ossp";
+
 CREATE TABLE public.message(
-    id UUID NOT NULL,
+    id UUID NOT NULL DEFAULT uuid_generate_v4(),
 	created timestamptz NULL DEFAULT CURRENT_TIMESTAMP,
 	last_modified timestamptz NULL DEFAULT CURRENT_TIMESTAMP,
 	exist bool NOT NULL DEFAULT true,
@@ -21,3 +23,5 @@ CREATE UNIQUE INDEX message_users_idx ON public.message(sender, recipient);
 DROP INDEX message_users_idx;
 
 DROP TABLE public.message;
+
+DROP EXTENSION "uuid-ossp"
